@@ -1,40 +1,33 @@
 version: "3.8"
- 
+
 services:
- 
-  mysql-db:
-    image: mysql:8.0.38
-    container_name: project10-mysql
-    restart: always
+  mysql:
+    image: mysql:8.0
+    container_name: ors-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: project10
+      MYSQL_DATABASE: ors10
     ports:
-      - "3308:3306"   # change to 3308:3306 if host MySQL already running
+      - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-    networks:
-      - project10-network
- 
-  project10-backend:
-    image: ors-backend:latest
-    container_name: project10-backend
-    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: ors-backend
     depends_on:
-      - mysql-db
+      mysql:
+        condition: service_healthy
     ports:
-      - "8080:8080"
+      - "8084:8084"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/project10?useSSL=false&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    networks:
-      - project10-network
- 
-networks:
-  project10-network:
-    driver: bridge
- 
+      DB_URL: jdbc:mysql://ors-mysql:3306/ors10?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
 volumes:
   mysql_data:

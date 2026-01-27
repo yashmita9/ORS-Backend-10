@@ -17,10 +17,11 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.rays.exception.DatabaseException;
 import com.rays.exception.DuplicateRecordException;
 
 /**
- * Yashmita Rathore
+ * SANAT KUMAR CHOUHAN
  *
  * @param <T>
  */
@@ -46,40 +47,44 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 	public T findByUniqueKey(String attribute, Object val, UserContext userContext) {
 		System.out.println("findByUniqueKey in BaseDaoImp ");
 		Class<T> dtoClass = getDTOClass();
+		
+			
+			CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<T> cq = builder.createQuery(dtoClass);
 
-		CriteriaQuery<T> cq = builder.createQuery(dtoClass);
+			Root<T> qRoot = cq.from(dtoClass);
 
-		Root<T> qRoot = cq.from(dtoClass);
+			Predicate condition = builder.equal(qRoot.get(attribute), val);
 
-		Predicate condition = builder.equal(qRoot.get(attribute), val);
+			if (userContext != null && !isZeroNumber(userContext.getOrgId())) {
+				Predicate conditionGrp = builder.equal(qRoot.get("orgId"), userContext.getOrgId());
+				cq.where(condition, conditionGrp);
+			} else {
+				cq.where(condition);
+			}
 
-		if (userContext != null && !isZeroNumber(userContext.getOrgId())) {
-			Predicate conditionGrp = builder.equal(qRoot.get("orgId"), userContext.getOrgId());
-			cq.where(condition, conditionGrp);
-		} else {
-			cq.where(condition);
-		}
+			TypedQuery<T> query = entityManager.createQuery(cq);
 
-		TypedQuery<T> query = entityManager.createQuery(cq);
+			List<T> list = query.getResultList();
 
-		List<T> list = query.getResultList();
+			T dto = null;
 
-		T dto = null;
+			if (list.size() > 0) {
+				dto = list.get(0);
+			}
 
-		if (list.size() > 0) {
-			dto = list.get(0);
-		}
-
-		return dto;
+			return dto;
+			
+		
 
 	}
 
 	public T findByPK(long pk, UserContext userContext) {
+		System.out.println("BaseDAOImpl >>>> ki findByPK method");
 		T dto = entityManager.find(getDTOClass(), pk);
 		return dto;
-	}
+	} 
 
 	/**
 	 * Build criteria query
@@ -89,21 +94,35 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 	 */
 	protected TypedQuery<T> createCriteria(T dto, UserContext userContext) {
 
+		System.out.println("BaseDao createCriteria run");
+
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
+		// Create criteria
 		CriteriaQuery<T> cq = builder.createQuery(getDTOClass());
 
+		// Columns information
 		Root<T> qRoot = cq.from(getDTOClass());
 
+		// Column of query
 		cq.select(qRoot);
 
+		// Create where conditions
 		List<Predicate> whereClause = getWhereClause(dto, builder, qRoot);
 
+		// Put organization filter
+		if (dto.isGroupFilter()) {
+			whereClause.add(builder.equal(qRoot.get("orgId"), dto.getOrgId()));
+		}
 		cq.where(whereClause.toArray(new Predicate[whereClause.size()]));
 
-		TypedQuery<T> query = entityManager.createQuery(cq);
+		List<Order> orderBys = getOrderByClause(dto, builder, qRoot);
 
-		return query;
+		cq.orderBy(orderBys.toArray(new Order[orderBys.size()]));
+
+		TypedQuery<T> query = entityManager.createQuery(cq);
+		return query;	
+
 	}
 
 	/**
@@ -117,16 +136,20 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 	protected abstract List<Predicate> getWhereClause(T dto, CriteriaBuilder builder, Root<T> qRoot);
 
 	public List search(T dto, int pageNo, int pageSize, UserContext userContext) {
-	
+		System.out.println("BaseDao search run");
+
+		// System.out.println("Base DAO dto :: " + dto);
+		// System.out.println(userContext);
 		TypedQuery<T> query = createCriteria(dto, userContext);
 
+		System.out.println(" PAGE ->>>>>>>>>>>>>>>>" + pageNo + " --- " + pageSize);
 		if (pageSize > 0) {
 
 			query.setFirstResult(pageNo * pageSize);
 			query.setMaxResults(pageSize);
 		}
 
-		List list = query.getResultList();
+		List list = query.getResultList();	
 
 		return list;
 	}
@@ -171,7 +194,7 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 		populate(dto, userContext);
 		System.out.println("Dto start ");
 		System.out.println(dto);
-		System.out.println("before calling persist method in base dao......amit");
+		System.out.println("before calling persist method in base dao......sanat");
 		entityManager.persist(dto);
 
 		return dto.getId();
@@ -195,9 +218,9 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 		dto.setModifiedBy(userContext.getLoginId());
 		dto.setModifiedDatetime(new Timestamp(new Date().getTime()));
 
-		populate(dto, userContext);
-
-		entityManager.merge(dto);
+			populate(dto, userContext);
+	
+			entityManager.merge(dto);
 
 	}
 
@@ -223,7 +246,6 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 	 * Delete a record
 	 */
 	public void delete(T dto, UserContext userContext) {
-		System.out.println("BaseDAOImpl");
 		entityManager.remove(dto);
 	}
 
@@ -236,7 +258,7 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 
 	/**
 	 * Check empty string
-	 * 
+	 * 			
 	 * @param val
 	 * @return
 	 */
@@ -287,10 +309,10 @@ public abstract class BaseDAOImpl<T extends BaseDTO> implements BaseDAOInt<T> {
 	 * @param qRoot
 	 * @return
 	 */
-	protected List<Order> getOrderByClause(T dto, CriteriaBuilder builder, Root<T> qRoot) {
+	protected List<Order> getOrderByClause(T dto, CriteriaBuilder builder, Root<T> qRoot){
 
 		// Apply Order by clause
-		System.out.println("baseDAO in getOrderByClause.......vipin ");
+		System.out.println("baseDAO in getOrderByClause.......sanat ");
 		LinkedHashMap<String, String> map = dto.orderBY();
 
 		List<Order> orderBys = new ArrayList<Order>();

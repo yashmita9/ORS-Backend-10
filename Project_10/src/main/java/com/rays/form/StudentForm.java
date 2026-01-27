@@ -16,6 +16,7 @@ import com.rays.dto.StudentDTO;
 public class StudentForm extends BaseForm {
 
 	@NotEmpty(message= "please enter firstname")
+	
 	private String firstName;
 
 	@NotEmpty(message= "please enter lastname")

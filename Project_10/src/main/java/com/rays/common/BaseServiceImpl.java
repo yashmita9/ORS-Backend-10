@@ -14,7 +14,7 @@ import com.rays.exception.DuplicateRecordException;
 
 
 /**
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  *
  * @param <T>
  * @param <D>
@@ -28,6 +28,7 @@ public abstract class BaseServiceImpl<T extends BaseDTO, D extends BaseDAOInt<T>
 
 	@Transactional(readOnly = true)
 	public T findById(long id, UserContext userContext) {
+		System.out.println("BaseServiceImpl >>>>> findById mrthod");
 		T dto = baseDao.findByPK(id, userContext);
 		// T dto baseDao.findByPK(Class<T>, pk)
 		return dto;
@@ -90,11 +91,14 @@ public abstract class BaseServiceImpl<T extends BaseDTO, D extends BaseDAOInt<T>
 	@Transactional(propagation = Propagation.REQUIRED)
 	public T delete(long id, UserContext userContext) {
 		log.debug("Base Service delete Start");
+		System.out.println("Base Service delete Start");
 		T dto = findById(id, userContext);
+		System.out.println("Base Service delete Start 2");
 		if (dto == null) {
+			System.out.println("BaseServiceImpl>>> Exception >>>> delete method @@@@@@@@@@@");
 			throw new DatabaseException("Record not found");
+			
 		}
-		System.out.println("baseserviceimpl");
 		baseDao.delete(dto, userContext);
 		log.debug("Base Service delete End");
 		return dto;

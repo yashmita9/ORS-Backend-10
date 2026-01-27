@@ -5,7 +5,7 @@ import com.rays.common.UserContext;
 
 /**
  * College Service interface.
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  */
 
 public interface MessageServiceInt extends BaseServiceInt<MessageDTO> {

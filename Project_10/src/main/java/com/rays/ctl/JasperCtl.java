@@ -1,6 +1,8 @@
+
 package com.rays.ctl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -35,58 +37,85 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+/**
+ * Jasper functionality Controller. Performs operation for Print pdf of
+ * MarksheetMeriteList
+ *
+ * @author SANAT KUMAR CHOUHAN
+ */
+/**
+ * The Class JasperCtl.
+ * 
+ * SANAT KUMAR CHOUHAN
+ */
+
 @Transactional
+
 @RestController
-@RequestMapping("Jasper")
+@RequestMapping(value = "Jasper")
 public class JasperCtl extends BaseCtl<MarksheetForm, MarksheetDTO, MarksheetServiceInt> {
 
-	private SessionFactory sessionFactory;
+	/** The session factory. */
+
+//	  @Autowired 
+	private SessionFactory sessionFactory = null;
+
+	/** The context. */
 
 	@Autowired
-	private ServletContext context;
+	ServletContext context;
 
 	@PersistenceContext
-	private EntityManager entityManager;
+	protected EntityManager entityManager;
 
-	@GetMapping(value = "report", produces = MediaType.APPLICATION_PDF_VALUE)
+	/**
+	 * Display.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @throws JRException  the JR exception
+	 * @throws SQLException the SQL exception
+	 * @throws IOException  Signals that an I/O exception has occurred.
+	 */
+	@GetMapping(value = "report", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public void display(HttpServletRequest request, HttpServletResponse response)
 			throws JRException, SQLException, IOException {
-
-		System.out.println("*************** Jasper Ctl ****************");
-
-		// Read application.properties
+		System.out.println("********************** Jasper Ctl*********************");
+		
+		ORSResponse res = new ORSResponse(true);
+		
 		ResourceBundle rb = ResourceBundle.getBundle("application");
-		String jrxmlPath = rb.getString("jasper");
+		// String path =
+		// context.getRealPath("C:\\Users\\dell\\JaspersoftWorkspace\\MyReports\\ORS10.jrxml");
+		
+		String path = context.getRealPath(rb.getString("jasper"));
+		
+		InputStream jasperStream =
+			    getClass().getResourceAsStream("/report/B.jrxml");
 
-		System.out.println("JRXML Path: " + jrxmlPath);
-
-		// Compile JRXML
-		JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlPath);
-
-		// DB Connection
-		sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
-		Connection con = sessionFactory.getSessionFactoryOptions()
+		Connection con = null;
+		JasperReport jasperReport = JasperCompileManager.compileReport(jasperStream);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		this.sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+		
+		con = sessionFactory
+				.getSessionFactoryOptions()
 				.getServiceRegistry()
 				.getService(ConnectionProvider.class)
 				.getConnection();
-
-		// Parameters (empty for now)
-		Map<String, Object> map = new HashMap<>();
-
-		// Fill the report
+		
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, con);
-
-		// Export PDF
+		
 		byte[] pdf = JasperExportManager.exportReportToPdf(jasperPrint);
-
+		
 		response.setContentType("application/pdf");
-		response.setHeader("Content-Disposition", "inline; filename=marksheetReport.pdf");
 		response.getOutputStream().write(pdf);
 		response.getOutputStream().flush();
-
-		System.out.println("PDF Generated Successfully");
-
-		// Close DB connection
-		con.close();
+		
+		System.out.println("Thanks");
+		// return MediaType.APPLICATION_JSON_VALUE;
 	}
+
 }

@@ -1,5 +1,5 @@
 package com.rays.service;
-//User ki details return karegi........
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;

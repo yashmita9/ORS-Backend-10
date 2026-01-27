@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 /**
  * Contains generic attributes of a form. It is extended by all form beans.
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  */
 
 public class BaseForm {
@@ -160,24 +160,49 @@ public class BaseForm {
 	}
 	
 	
+//	@Override
+//	public String toString() {
+//		StringBuffer buffer = new StringBuffer();
+//		Method[] ms = this.getClass().getMethods();
+//
+//		String mName = null;
+//		for (int i = 0; i < ms.length; i++) {
+//			mName = ms[i].getName();
+//			if (mName.startsWith("get")) {
+//				try {
+//					buffer.append("\n\t" + mName + " = " + ms[i].invoke(this, (Object[]) null));
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//
+//		}
+//		return buffer.toString();
+//	}
+	
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		Method[] ms = this.getClass().getMethods();
+	    StringBuilder buffer = new StringBuilder();
+	    Method[] methods = this.getClass().getMethods();
 
-		String mName = null;
-		for (int i = 0; i < ms.length; i++) {
-			mName = ms[i].getName();
-			if (mName.startsWith("get")) {
-				try {
-					buffer.append("\n\t" + mName + " = " + ms[i].invoke(this, (Object[]) null));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+	    for (Method method : methods) {
+	        String name = method.getName();
 
-		}
-		return buffer.toString();
+	        // Skip methods that are not getters or are getClass()
+	        if (name.startsWith("get") &&
+	            method.getParameterCount() == 0 &&
+	            !name.equals("getClass")) {
+	            try {
+	                Object value = method.invoke(this);
+	                buffer.append("\n\t").append(name).append(" = ").append(value);
+	            } catch (Exception e) {
+	                buffer.append("\n\t").append(name).append(" = ERROR: ").append(e.getClass().getSimpleName());
+	                // Optional: log the exception
+	            }
+	        }
+	    }
+	    return buffer.toString();
 	}
+
 
 }

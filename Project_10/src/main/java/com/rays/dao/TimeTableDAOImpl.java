@@ -19,7 +19,7 @@ import com.rays.dto.SubjectDTO;
 import com.rays.dto.TimeTableDTO;
 import com.rays.dto.UserDTO;
 /**
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  *
  */
 @Repository
@@ -28,7 +28,7 @@ public class TimeTableDAOImpl extends BaseDAOImpl<TimeTableDTO> implements TimeT
 	@Override
 	protected List<Predicate> getWhereClause(TimeTableDTO dto, CriteriaBuilder builder, Root<TimeTableDTO> qRoot) {
 		List<Predicate> whereCondition = new ArrayList<Predicate>();
-		
+		System.out.println("wherre clause run start");
 		if (!isEmptyString(dto.getSubjectName())) {
 
 			whereCondition.add(builder.like(qRoot.get("subjectName"), dto.getSubjectName() + "%"));

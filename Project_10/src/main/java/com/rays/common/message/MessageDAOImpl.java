@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.rays.common.BaseDAOImpl;
 /**
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  *
  */
 @Repository

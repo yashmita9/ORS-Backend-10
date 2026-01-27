@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 import com.rays.common.BaseDTO;
 /**
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  *
  */
 @Entity

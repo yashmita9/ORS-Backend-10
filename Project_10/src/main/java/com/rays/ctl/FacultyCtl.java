@@ -25,7 +25,7 @@ import com.rays.service.SubjectServiceInt;
 
 
 /**
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  *
  */
 @RestController

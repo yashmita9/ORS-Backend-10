@@ -17,7 +17,7 @@ import com.rays.dto.RoleDTO;
 import com.rays.dto.SubjectDTO;
 import com.rays.dto.UserDTO;
 /**
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  *
  */
 @Repository

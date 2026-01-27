@@ -22,7 +22,7 @@ import com.rays.dto.UserDTO;
 /**
  * Contains User CRUD operations
  * 
- * Yashmita Rathore
+ * SANAT KUMAR CHOUHAN
  *
  */
 @Repository
@@ -59,6 +59,10 @@ public class UserDAOImpl extends BaseDAOImpl<UserDTO> implements UserDAOInt {
 
 			whereCondition.add(builder.equal(qRoot.get("loginId"), dto.getLoginId()));
 		}
+		if (!isEmptyString(dto.getGender())) {
+
+			whereCondition.add(builder.equal(qRoot.get("gender"), dto.getGender()));
+		}
 		if (!isEmptyString(dto.getPassword())) {
 
 			whereCondition.add(builder.equal(qRoot.get("password"), dto.getPassword()));
@@ -69,7 +73,11 @@ public class UserDAOImpl extends BaseDAOImpl<UserDTO> implements UserDAOInt {
 			whereCondition.add(builder.equal(qRoot.get("status"), dto.getStatus()));
 		}
 
-	      
+		if (!isZeroNumber(dto.getRoleId())) {
+
+			whereCondition.add(builder.equal(qRoot.get("roleId"), dto.getRoleId()));
+		}
+
 		if (isNotNull(dto.getDob())) {
 
 			whereCondition.add(builder.equal(qRoot.get("dob"), dto.getDob()));
@@ -94,31 +102,15 @@ public class UserDAOImpl extends BaseDAOImpl<UserDTO> implements UserDAOInt {
 		}
 	}
 
-//	public void delete(UserDTO dto, UserContext userContext) {
-//		super.delete(dto, userContext);
-//		Long id = dto.getImageId();
-//		System.out.println(id);
-//		AttachmentDTO attachmentDto = attachmentService.findByPK(id, userContext);
-//		attachmentService.delete(attachmentDto, userContext);
-//	}
-
-	
 	public void delete(UserDTO dto, UserContext userContext) {
-	    super.delete(dto, userContext);
-	    
-	    Long id = dto.getImageId();
-	    System.out.println("Image ID to delete: " + id);
-	    
-	    if (id != null) {
-	        AttachmentDTO attachmentDto = attachmentService.findByPK(id, userContext);
-	        if (attachmentDto != null) {
-	            attachmentService.delete(attachmentDto, userContext);
-	        } else {
-	            System.out.println("No attachment found for imageId = " + id);
-	        }
-	    } else {
-	        System.out.println("No imageId for this user.");
-	    }
+		super.delete(dto, userContext);
+		Long id = dto.getImageId();
+		System.out.println(id);
+		if (id != null) {
+
+			AttachmentDTO attachmentDto = attachmentService.findByPK(id, userContext);
+			attachmentService.delete(attachmentDto, userContext);
+		}
 	}
 
 	@Override

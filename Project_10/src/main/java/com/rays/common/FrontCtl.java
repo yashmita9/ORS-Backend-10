@@ -20,7 +20,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 /**
  * Front controller verifies if user id logged in
  * 
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  * 
  */
 @Component
@@ -64,7 +64,7 @@ public class FrontCtl extends HandlerInterceptorAdapter {
 		 * response.setHeader("Access-Control-Allow-Methods","GET,HEAD,OPTIONS,POST,PUT"
 		 * ); response.setHeader("Access-Control-Allow-Headers",
 		 * "set-cookie,Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-		 * );  
+		 * );
 		 * 
 		 * PrintWriter out = response.getWriter(); out.
 		 * print("{\"success\":\"false\",\"error\":\"OOPS! Your session has been expired\"}"

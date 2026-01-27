@@ -1,4 +1,4 @@
-  package com.rays.config;
+package com.rays.config;
 
 import java.io.IOException;
 

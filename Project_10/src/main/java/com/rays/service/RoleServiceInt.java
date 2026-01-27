@@ -7,7 +7,7 @@ import com.rays.dto.RoleDTO;
 /**
  * College Service interface.
  * 
- * Yashmita Rathore 
+ * SANAT KUMAR CHOUHAN 
  
  */
 

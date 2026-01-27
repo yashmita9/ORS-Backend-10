@@ -1,4 +1,4 @@
-	package com.rays.common;
+package com.rays.common;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -15,8 +15,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 /**
- * Base class extended by all DTOs.
- * Yashmita Rathore 
+ * Base class extended by all DTOs. SANAT KUMAR CHOUHAN
  */
 @MappedSuperclass
 public abstract class BaseDTO implements Serializable, DropdownList, Comparable<BaseDTO> {
@@ -26,7 +25,7 @@ public abstract class BaseDTO implements Serializable, DropdownList, Comparable<
 	 */
 	@Id
 	@GeneratedValue(generator = "ncsPk")
-	@GenericGenerator(name = "ncsPk", strategy = "native")
+	@GenericGenerator(name = "ncsPk", strategy = "increment")
 	@Column(name = "ID", unique = true, nullable = false)
 	protected Long id;
 	/**
@@ -59,11 +58,11 @@ public abstract class BaseDTO implements Serializable, DropdownList, Comparable<
 	private String orgName;
 
 	public abstract String getUniqueKey();
-	
+
 	public abstract String getUniqueValue();
-	
+
 	public abstract String getLabel();
-	
+
 	/**
 	 * accessor
 	 */
@@ -126,9 +125,9 @@ public abstract class BaseDTO implements Serializable, DropdownList, Comparable<
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
 	}
-	
+
 	public String getKey() {
-		return String.valueOf(id);
+		return id + "";
 	}
 
 	/**
