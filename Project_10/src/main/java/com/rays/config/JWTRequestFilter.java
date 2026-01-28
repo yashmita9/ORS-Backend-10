@@ -1,75 +1,33 @@
-package com.rays.config;
+try {
+    if (!jwtUtil.validateToken(jwtToken)) {
+        throw new Exception("Invalid JWT token");
+    }
 
-import java.io.IOException;
+    String username = jwtUtil.extractUsername(jwtToken);
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.transaction.CannotCreateTransactionException;
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
 
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
 
-import com.rays.service.JWTUserDetailsService;
+        authenticationToken.setDetails(
+                new WebAuthenticationDetailsSource().buildDetails(request));
 
-@Component
-public class JWTRequestFilter extends OncePerRequestFilter {
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
 
-	@Autowired
-	private JWTUtil jwtUtil;
+} catch (CannotCreateTransactionException ex) {
 
-	@Autowired
-	private JWTUserDetailsService jwtUserDetailsService;
-
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-
-		final String authorizationHeader = request.getHeader("Authorization");
-
-		System.out.println("JWT Token ======>>>>> " + authorizationHeader);
-
-		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-
-			String jwtToken = authorizationHeader.substring(7);
-
-			try {
-				if (!jwtUtil.validateToken(jwtToken)) {
-					throw new Exception("Invalid JWT token");
-				}
-
-				String username = jwtUtil.extractUsername(jwtToken);
-
-				if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-					UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
-
-					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-							userDetails, null, userDetails.getAuthorities());
-
-					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-				}
-			} catch (Exception e) {
-
-  if (e.getCause() instanceof CannotCreateTransactionException) {
-    response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+    response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE); // 503
     response.getWriter().write("Database service is currently unavailable");
-  } else {
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    return;
+
+} catch (Exception ex) {
+
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
     response.getWriter().write("Token invalid or expired");
-  }
-  return;
-}
-		}
-		filterChain.doFilter(request, response);
-	}
+    return;
 }
