@@ -65,23 +65,24 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                             .setAuthentication(authenticationToken);
                 }
 
-            } catch (CannotCreateTransactionException ex) {
+            }catch (Exception e) {
 
-                // ✅ DB DOWN CASE → 503
-                response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-                response.getWriter()
-                        .write("Database service is currently unavailable");
-                return;
+    Throwable cause = e;
 
-            } catch (Exception ex) {
-
-                // ✅ TOKEN INVALID / EXPIRED → 401
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter()
-                        .write("Token invalid or expired");
-                return;
-            }
+    while (cause != null) {
+        if (cause instanceof CannotCreateTransactionException) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            response.getWriter().write("Database service is currently unavailable");
+            return;
         }
+        cause = cause.getCause();
+    }
+
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    response.getWriter().write("Token invalid or expired");
+    return;
+}
+
 
         filterChain.doFilter(request, response);
     }
