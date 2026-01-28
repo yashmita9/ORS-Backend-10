@@ -28,13 +28,13 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     private JWTUserDetailsService jwtUserDetailsService;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("JWT Token ======>>>>> " + authorizationHeader);
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
@@ -48,7 +48,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                 String username = jwtUtil.extractUsername(jwtToken);
 
                 if (username != null &&
-                    SecurityContextHolder.getContext().getAuthentication() == null) {
+                        SecurityContextHolder.getContext().getAuthentication() == null) {
 
                     UserDetails userDetails =
                             jwtUserDetailsService.loadUserByUsername(username);
@@ -58,31 +58,30 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                                     userDetails, null, userDetails.getAuthorities());
 
                     authenticationToken.setDetails(
-                            new WebAuthenticationDetailsSource()
-                                    .buildDetails(request));
+                            new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext()
                             .setAuthentication(authenticationToken);
                 }
 
-            }catch (Exception e) {
+            } catch (Exception e) {
 
-    Throwable cause = e;
+                Throwable cause = e;
+                while (cause != null) {
+                    if (cause instanceof CannotCreateTransactionException) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                        response.getWriter()
+                                .write("Database service is currently unavailable");
+                        return;
+                    }
+                    cause = cause.getCause();
+                }
 
-    while (cause != null) {
-        if (cause instanceof CannotCreateTransactionException) {
-            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            response.getWriter().write("Database service is currently unavailable");
-            return;
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token invalid or expired");
+                return;
+            }
         }
-        cause = cause.getCause();
-    }
-
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    response.getWriter().write("Token invalid or expired");
-    return;
-}
-
 
         filterChain.doFilter(request, response);
     }
