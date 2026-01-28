@@ -57,10 +57,16 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 				}
 			} catch (Exception e) {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().write("Token is invalid... plz login again..!!");
-				return;
-			}
+
+  if (e.getCause() instanceof CannotCreateTransactionException) {
+    response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+    response.getWriter().write("Database service is currently unavailable");
+  } else {
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    response.getWriter().write("Token invalid or expired");
+  }
+  return;
+}
 		}
 		filterChain.doFilter(request, response);
 	}
