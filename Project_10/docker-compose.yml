@@ -26,7 +26,7 @@ services:
     ports:
       - "8084:8084"
     environment:
-      DB_URL: jdbc:mysql://ors-mysql:3306/ors10?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_URL: jdbc:mysql://mysql:3306/ors10?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       DB_USERNAME: root
       DB_PASSWORD: root
 
