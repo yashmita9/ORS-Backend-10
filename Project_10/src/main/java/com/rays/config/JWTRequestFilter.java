@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.rays.service.JWTUserDetailsService;
@@ -21,68 +20,70 @@ import com.rays.service.JWTUserDetailsService;
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JWTUtil jwtUtil;
+	@Autowired
+	private JWTUtil jwtUtil;
 
-    @Autowired
-    private JWTUserDetailsService jwtUserDetailsService;
+	@Autowired
+	private JWTUserDetailsService jwtUserDetailsService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("JWT Token ======>>>>> " + authorizationHeader);
+		final String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+		System.out.println("JWT Token ======>>>>> " + authorizationHeader);
 
-            String jwtToken = authorizationHeader.substring(7);
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
-            try {
-                // Token validation only
-                if (!jwtUtil.validateToken(jwtToken)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Invalid or expired token");
-                    return;
-                }
+			String jwtToken = authorizationHeader.substring(7);
 
-                String username = jwtUtil.extractUsername(jwtToken);
+			try {
+				if (!jwtUtil.validateToken(jwtToken)) {
+					throw new Exception("Invalid JWT token");
+				}
 
-                if (username != null &&
-                        SecurityContextHolder.getContext().getAuthentication() == null) {
+				String username = jwtUtil.extractUsername(jwtToken);
 
-                    UserDetails userDetails =
-                            jwtUserDetailsService.loadUserByUsername(username);
+				if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities());
+					UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
 
-                    authenticationToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request));
+					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+							userDetails, null, userDetails.getAuthorities());
 
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authenticationToken);
-                }
+					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            } catch (CannotCreateTransactionException ex) {
+					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+				}
+			} catch (Exception e) {
 
-                response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-                response.getWriter()
-                        .write("Database service is currently unavailable");
-                return;
+			    // DB related exceptions → return 503 directly
+			    if (e instanceof org.springframework.transaction.CannotCreateTransactionException
+			            || e instanceof org.springframework.dao.DataAccessResourceFailureException
+			            || e instanceof org.hibernate.exception.JDBCConnectionException) {
 
-            } catch (Exception ex) {
+			        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+			        response.setContentType("application/json");
 
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter()
-                        .write("Token invalid or expired");
-                return;
-            }
-        }
+			        response.getWriter().write(
+			            "{\"success\":false,\"message\":[\"Database service is currently unavailable. Please try again later.\"]}"
+			        );
+			        return;   // stop filter chain
+			    }
 
-        filterChain.doFilter(request, response);
-    }
+			    // JWT related errors → 401
+			    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			    response.setContentType("application/json");
+
+			    response.getWriter().write(
+			        "{\"success\":false,\"message\":[\"Token is invalid or expired. Please login again.\"]}"
+			    );
+			    return;
+			}
+
+
+		}
+		filterChain.doFilter(request, response);
+	}
 }
