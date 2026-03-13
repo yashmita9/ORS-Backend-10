@@ -17,7 +17,7 @@ import com.rays.service.CollegeServiceInt;
 
 
 /**
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  *
  */
 @RestController

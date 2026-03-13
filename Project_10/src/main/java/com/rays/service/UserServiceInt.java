@@ -7,7 +7,7 @@ import com.rays.dto.UserDTO;
 /**
  * 
  * User Service interface.
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  * 
  */
 

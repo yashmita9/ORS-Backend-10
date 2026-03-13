@@ -39,7 +39,7 @@ import com.rays.service.RoleServiceInt;
 import com.rays.service.UserServiceInt;
 
 /**
- * SANAT KUMAR CHOUHAN
+ * Yashmita Rathore
  *
  */
 @RestController
@@ -80,7 +80,7 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 		// res.setSuccess(true);
 		res.addMessage("Logout Successfully");
 		// res.addResult("roleList", list);
-		System.out.println("SANAT KUMAR CHOUHAN logout");
+		System.out.println("Yashmita Rathore logout");
 		return res;
 	}
 
@@ -222,7 +222,7 @@ public class UserCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 	public ORSResponse uploadPic(@PathVariable Long userId, @RequestParam("file") MultipartFile file,
 			HttpServletRequest req) {
 
-		System.out.println("User ID id --------------SANAT KUMAR CHOUHAN" + userId);
+		System.out.println("User ID id --------------Yashmita Rathore" + userId);
 
 		UserDTO userDTO = baseService.findById(userId, userContext);
 

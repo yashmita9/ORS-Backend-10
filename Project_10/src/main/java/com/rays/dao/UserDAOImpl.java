@@ -22,7 +22,7 @@ import com.rays.dto.UserDTO;
 /**
  * Contains User CRUD operations
  * 
- * SANAT KUMAR CHOUHAN
+ * Yashmita Rathore
  *
  */
 @Repository

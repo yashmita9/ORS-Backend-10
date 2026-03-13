@@ -12,15 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /**
  * Handles application propagated exceptions
  * 
- * Sushobhit Pandey 
+ * Yashmita Rathore 
  *
  */
-
-
 @RestControllerAdvice
 public class ApplicationExceptionHandlerCtl {
 
-    // All database related problems
+  
     @ExceptionHandler({
         CannotCreateTransactionException.class,
         DataAccessResourceFailureException.class,
@@ -32,7 +30,7 @@ public class ApplicationExceptionHandlerCtl {
         res.addMessage("Database service is currently unavailable. Please try again later.");
 
         return ResponseEntity
-                .status(HttpStatus.SERVICE_UNAVAILABLE)   // 503
+                .status(HttpStatus.SERVICE_UNAVAILABLE)  
                 .body(res);
     }
 
@@ -44,7 +42,7 @@ public class ApplicationExceptionHandlerCtl {
         res.addMessage(e.getMessage());
 
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR) // 500
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(res);
     }
 }

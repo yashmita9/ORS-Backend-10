@@ -9,7 +9,7 @@ import com.rays.common.BaseDTO;
 
 /**
  * Contains attached file information and data
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  */
 
 @MappedSuperclass

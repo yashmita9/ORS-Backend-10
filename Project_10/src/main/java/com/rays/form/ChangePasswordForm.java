@@ -7,7 +7,7 @@ import com.rays.common.BaseForm;
 
 /**
  * Contains change password form elements and their declarative input validations.
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  */
 
 public class ChangePasswordForm extends BaseForm {

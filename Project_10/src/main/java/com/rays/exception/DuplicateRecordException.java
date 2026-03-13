@@ -2,7 +2,7 @@ package com.rays.exception;
 
 /**
  * DuplicateRecordException thrown when a duplicate record occurred
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  */
 public class DuplicateRecordException extends RuntimeException {
 

@@ -20,7 +20,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 /**
  * Front controller verifies if user id logged in
  * 
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  * 
  */
 @Component

@@ -8,7 +8,7 @@ import com.rays.dto.MarksheetDTO;
 
 /**
  * College Service interface.
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  */
 
 public interface MarksheetServiceInt extends BaseServiceInt<MarksheetDTO> {

@@ -16,7 +16,7 @@ import com.rays.common.UserContext;
 import com.rays.dto.MarksheetDTO;
 import com.rays.dto.StudentDTO;
 /**
- * SANAT KUMAR CHOUHAN 
+ * Yashmita Rathore 
  *
  */
 @Repository
