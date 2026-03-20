@@ -67,7 +67,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 			        response.setContentType("application/json");
 
 			        response.getWriter().write(
-			            "{\"success\":false,\"message\":[\"Database service is currently unavailable. Please try again later.\"]}"
+			            "{\"success\":false,\"message\":[\"Database is currently unavailable. Please try again later.\"]}"
 			        );
 			        return;   // stop filter chain
 			    }
