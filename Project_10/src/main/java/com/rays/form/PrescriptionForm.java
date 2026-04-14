@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.rays.common.BaseDTO;
 import com.rays.common.BaseForm;
@@ -12,12 +13,14 @@ import com.rays.dto.PrescriptionDTO;
 public class PrescriptionForm extends BaseForm {
 
     @NotEmpty(message = "Please Enter patientName")
+    @Pattern(regexp = "^[A-Za-z ]{2,50}$", message = "Invalid Patient Name")
     private String patientName;
 
     @NotEmpty(message = "Please Enter doctorName")
     private String doctorName;
 
     @NotEmpty(message = "Please Enter mobileNumber")
+    @Pattern(regexp = "^[6-9][0-9]{9}$", message = "Invalid Mobile Number")
     private String mobileNumber;
 
     @NotNull(message = "Please Enter prescribedDate")
