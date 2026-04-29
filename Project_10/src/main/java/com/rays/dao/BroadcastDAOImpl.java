@@ -18,7 +18,7 @@ public class BroadcastDAOImpl extends BaseDAOImpl<BroadcastDTO> implements Broad
 	@Override
 	protected List<Predicate> getWhereClause(BroadcastDTO dto, CriteriaBuilder builder, Root<BroadcastDTO> qRoot) {
 
-		List<Predicate> whereCondition = new ArrayList<>();
+		List<Predicate> whereCondition = new ArrayList<>(); 
 
 		if (!isEmptyString(dto.getBroadcastCode())) {
 			whereCondition.add(builder.like(qRoot.get("broadcastCode"), dto.getBroadcastCode() + "%"));

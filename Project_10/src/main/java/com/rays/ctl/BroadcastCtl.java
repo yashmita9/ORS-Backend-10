@@ -18,7 +18,7 @@ import com.rays.service.BroadcastServiceInt;
 public class BroadcastCtl extends BaseCtl<BroadcastForm, BroadcastDTO, BroadcastServiceInt> {
 
     @Autowired
-    private BroadcastServiceInt baseService;
+    private BroadcastServiceInt baseService; 
 
     @GetMapping("/preload")
     public ORSResponse preload() {

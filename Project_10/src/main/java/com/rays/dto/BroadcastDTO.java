@@ -21,7 +21,7 @@ public class BroadcastDTO extends BaseDTO {
     @Column(name = "Message", length = 255)
     private String message;
 
-    @Column(name = "Sent_By", length = 50)
+    @Column(name = "Sent_By", length = 50) 
     private String sentBy;
 
     @Column(name = "Status", length = 20)

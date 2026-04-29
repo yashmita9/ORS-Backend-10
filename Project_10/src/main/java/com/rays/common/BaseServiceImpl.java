@@ -31,6 +31,7 @@ public abstract class BaseServiceImpl<T extends BaseDTO, D extends BaseDAOInt<T>
 		System.out.println("BaseServiceImpl >>>>> findById mrthod");
 		T dto = baseDao.findByPK(id, userContext);
 		// T dto baseDao.findByPK(Class<T>, pk)
+	
 		return dto;
 	}
 	
@@ -65,6 +66,13 @@ public abstract class BaseServiceImpl<T extends BaseDTO, D extends BaseDAOInt<T>
 		// check duplicate
 		System.out.println("add() run in BaseSecrvice......rahul ");
 		long pk = baseDao.add(dto, userContext);
+		try {
+		if(true) {
+			throw new RuntimeException();
+		}
+		}catch(RuntimeException e) {
+			System.out.println(e.getMessage());
+		}
 		return pk;
 	}
 
@@ -84,6 +92,9 @@ public abstract class BaseServiceImpl<T extends BaseDTO, D extends BaseDAOInt<T>
 		} else {
 			id = add(dto, userContext);
 			System.out.println("else execute");
+		}
+		if(true) {
+			throw new RuntimeException();
 		}
 		return id;
 	}

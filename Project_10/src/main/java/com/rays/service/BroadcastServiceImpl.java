@@ -11,6 +11,6 @@ import com.rays.dto.BroadcastDTO;
 @Service
 @Transactional
 public class BroadcastServiceImpl extends BaseServiceImpl<BroadcastDTO, BroadcastDAOInt>
-		implements BroadcastServiceInt {
+		implements BroadcastServiceInt { 
 
 }

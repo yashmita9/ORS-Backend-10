@@ -14,7 +14,7 @@ public class BroadcastForm extends BaseForm {
 
 	@NotEmpty(message = "Please Enter message")
 	private String message;
-
+ 
 	@NotEmpty(message = "Please Enter sentBy")
 	@Pattern(regexp = "^[A-Za-z ]{2,50}$", message = "Invalid Sender Name")
 	private String sentBy;
