@@ -67,10 +67,10 @@ public abstract class BaseServiceImpl<T extends BaseDTO, D extends BaseDAOInt<T>
 		System.out.println("add() run in BaseSecrvice......rahul ");
 		long pk = baseDao.add(dto, userContext);
 		try {
-		if(true) {
-			throw new RuntimeException();
-		}
-		}catch(RuntimeException e) {
+			if(true) {
+				throw new RuntimeException();
+			}
+		}catch(RuntimeException e){
 			System.out.println(e.getMessage());
 		}
 		return pk;
